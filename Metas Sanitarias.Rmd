@@ -1,0 +1,1039 @@
+---
+title: "Metas Sanitarias"
+author: "Unidad Control de Gestión"
+date: "2021"
+output: 
+  rmdformats::material:
+    highlight: kate
+thumbnails: FALSE
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+library(readxl)
+library(kableExtra)
+library(tidyverse)
+library(dplyr)
+
+## Global options
+options(max.print = "75")
+opts_chunk$set(
+  echo = FALSE, # para no mostrar el codigo en todos los Chunk de abajo
+  message = FALSE,
+  warning = FALSE
+) # Para que no muestre alertas
+
+opts_knit$set(width = 75)
+```
+
+```{r Meta 18.834 datos}
+# Nombres Metas ------------------------------------------------------------------
+L18 <- "BBDD Produccion/Indicadores/2021/Metas Sanitarias/Hospital Roberto del Rio 18834.xlsx"
+L19 <- "BBDD Produccion/Indicadores/2021/Metas Sanitarias/Hospital Roberto del Rio 19664.xlsx"
+
+N1 <- read_excel(L18,col_names = F,range = "Planilla HRR!C17:C17")
+
+N2 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!C28:C28")
+
+N3 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!C39:C39")
+
+N4 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!C50:C50")
+
+N5 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!C62:C62")
+
+N6 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!C74:C74")
+
+# M1 ----------------------------------------------------------------------
+
+M18834 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!B22:N23"
+)
+
+ProgM1 <- 721 # mensual
+MetaM1 <- 95
+Pond1 <- 15
+
+colnames(M18834)[2] <- "enero"
+colnames(M18834)[3] <- "febrero"
+colnames(M18834)[4] <- "marzo"
+colnames(M18834)[5] <- "abril"
+colnames(M18834)[6] <- "mayo"
+colnames(M18834)[7] <- "junio"
+colnames(M18834)[8] <- "julio"
+colnames(M18834)[9] <- "agosto"
+colnames(M18834)[10] <- "septiembre"
+colnames(M18834)[11] <- "octubre"
+colnames(M18834)[12] <- "noviembre"
+colnames(M18834)[13] <- "diciembre"
+
+# Transpone todas las columnas menos la primer
+M1 <- data.frame(t(M18834[-1]))
+
+M1D <- sum(ifelse(M1$X2 > 0, 1, 0)) * ProgM1
+M1N <- sum(M1$X1)
+Alc1 <- M1N / M1D * 100
+Cum_alc1 <- ifelse(Alc1 >= MetaM1, 100, Alc1)
+Cumplim1 <- Cum_alc1 * Pond1 / 100
+
+# Añadimos los nombres de las columnas
+colnames(M1) <- c(M18834[1, 1], M18834[2, 1])
+
+# M2 ----------------------------------------------------------------------
+M18834 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!B33:N34"
+)
+
+MetaM2 <- 90
+Pond2 <- 30
+
+
+colnames(M18834)[2] <- "enero"
+colnames(M18834)[3] <- "febrero"
+colnames(M18834)[4] <- "marzo"
+colnames(M18834)[5] <- "abril"
+colnames(M18834)[6] <- "mayo"
+colnames(M18834)[7] <- "junio"
+colnames(M18834)[8] <- "julio"
+colnames(M18834)[9] <- "agosto"
+colnames(M18834)[10] <- "septiembre"
+colnames(M18834)[11] <- "octubre"
+colnames(M18834)[12] <- "noviembre"
+colnames(M18834)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+M2 <- data.frame(t(M18834[-1]))
+
+M2D <- sum(M2$X2)
+M2N <- sum(M2$X1)
+Alc2 <- M2N / M2D * 100
+Cum_alc2 <- ifelse(Alc2 >= MetaM2, 100, Alc2)
+Cumplim2 <- Cum_alc2 * Pond2 / 100
+
+# Añadimos los nombres de las columnas
+colnames(M2) <- c(M18834[1, 1], M18834[2, 1])
+
+
+# M3 ----------------------------------------------------------------------
+M18834 <- read_excel(L18,
+  col_names = F, range = "Planilla HRR!B44:N45", na = ""
+)
+M18834 <- mutate_all(M18834, ~ replace(., is.na(.), 0))
+
+MetaM3 <- 95
+Pond3 <- 20
+
+
+colnames(M18834)[2] <- "enero"
+colnames(M18834)[3] <- "febrero"
+colnames(M18834)[4] <- "marzo"
+colnames(M18834)[5] <- "abril"
+colnames(M18834)[6] <- "mayo"
+colnames(M18834)[7] <- "junio"
+colnames(M18834)[8] <- "julio"
+colnames(M18834)[9] <- "agosto"
+colnames(M18834)[10] <- "septiembre"
+colnames(M18834)[11] <- "octubre"
+colnames(M18834)[12] <- "noviembre"
+colnames(M18834)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+M3 <- data.frame(t(M18834[-1]))
+
+M3D <- sum(M3$X2)
+M3N <- sum(M3$X1)
+Alc3 <- M3N / M3D * 100
+Cum_alc3 <- ifelse(Alc3 >= MetaM3, 100, Alc3)
+Cumplim3 <- Cum_alc3 * Pond3 / 100
+
+# Añadimos los nombres de las columnas
+colnames(M3) <- c(M18834[1, 1], M18834[2, 1])
+
+
+
+# M4 ----------------------------------------------------------------------
+
+M18834 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!B55:N56", na = ""
+)
+M18834 <- mutate_all(M18834, ~ replace(., is.na(.), 0))
+
+MetaM4 <- 100
+Pond4 <- 10
+
+
+colnames(M18834)[2] <- "enero"
+colnames(M18834)[3] <- "febrero"
+colnames(M18834)[4] <- "marzo"
+colnames(M18834)[5] <- "abril"
+colnames(M18834)[6] <- "mayo"
+colnames(M18834)[7] <- "junio"
+colnames(M18834)[8] <- "julio"
+colnames(M18834)[9] <- "agosto"
+colnames(M18834)[10] <- "septiembre"
+colnames(M18834)[11] <- "octubre"
+colnames(M18834)[12] <- "noviembre"
+colnames(M18834)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+M4 <- data.frame(t(M18834[-1]))
+
+M4D <- sum(M4$X2)
+M4N <- sum(M4$X1)
+Alc4 <- M4N / M4D * 100
+Cum_alc4 <- ifelse(Alc4 >= MetaM4, 100, Alc4)
+Cumplim4 <- Cum_alc4 * Pond4 / 100
+
+# Añadimos los nombres de las columnas
+colnames(M4) <- c(M18834[1, 1], M18834[2, 1])
+
+# M5 ----------------------------------------------------------------------
+
+M18834 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!B67:N68", na = "")
+M18834 <- mutate_all(M18834, ~ replace(., is.na(.), 0))
+
+MetaM5 <- 80
+Pond5 <- 15
+
+
+colnames(M18834)[2] <- "enero"
+colnames(M18834)[3] <- "febrero"
+colnames(M18834)[4] <- "marzo"
+colnames(M18834)[5] <- "abril"
+colnames(M18834)[6] <- "mayo"
+colnames(M18834)[7] <- "junio"
+colnames(M18834)[8] <- "julio"
+colnames(M18834)[9] <- "agosto"
+colnames(M18834)[10] <- "septiembre"
+colnames(M18834)[11] <- "octubre"
+colnames(M18834)[12] <- "noviembre"
+colnames(M18834)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+M5 <- data.frame(t(M18834[-1]))
+
+M5D <- sum(M5$X2)
+M5N <- sum(M5$X1)
+Alc5 <- M5N / M5D * 100
+Cum_alc5 <- ifelse(Alc5 >= MetaM5, 100, Alc5)
+Cumplim5 <- Cum_alc5 * Pond5 / 100
+
+# Añadimos los nombres de las columnas
+colnames(M5) <- c(M18834[1, 1], M18834[2, 1])
+
+
+# M6 ----------------------------------------------------------------------
+M18834 <- read_excel(L18,
+  col_names = F,
+  range = "Planilla HRR!B79:N80", na = "")
+M18834 <- mutate_all(M18834, ~ replace(., is.na(.), 0))
+
+MetaM6 <- 50
+Pond6 <- 10
+
+
+colnames(M18834)[2] <- "enero"
+colnames(M18834)[3] <- "febrero"
+colnames(M18834)[4] <- "marzo"
+colnames(M18834)[5] <- "abril"
+colnames(M18834)[6] <- "mayo"
+colnames(M18834)[7] <- "junio"
+colnames(M18834)[8] <- "julio"
+colnames(M18834)[9] <- "agosto"
+colnames(M18834)[10] <- "septiembre"
+colnames(M18834)[11] <- "octubre"
+colnames(M18834)[12] <- "noviembre"
+colnames(M18834)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+M6 <- data.frame(t(M18834[-1]))
+
+M6D <- sum(M6$X2)
+M6N <- sum(M6$X1)
+Alc6 <- M6N / M6D * 100
+Cum_alc6 <- ifelse(Alc6 >= MetaM6 * 0.6, ifelse(Alc6 >= MetaM6, 100, Alc6), 0)
+Cumplim6 <- Cum_alc6 * Pond6 / 100
+
+# Añadimos los nombres de las columnas
+colnames(M6) <- c(M18834[1, 1], M18834[2, 1])
+
+Total_Meta <- Cumplim1 + Cumplim2 + Cumplim3 + Cumplim4 + Cumplim5 + Cumplim6
+
+CM1 <- ifelse(Cum_alc1 == 100, "Cumple", "No Cumple")
+CM2 <- ifelse(Cum_alc2 == 100, "Cumple", "No Cumple")
+CM3 <- ifelse(Cum_alc3 == 100, "Cumple", "No Cumple")
+CM4 <- ifelse(Cum_alc4 == 100, "Cumple", "No Cumple")
+CM5 <- ifelse(Cum_alc5 == 100, "Cumple", "No Cumple")
+CM6 <- ifelse(Cum_alc6 == 100, "Cumple", "No Cumple")
+
+Tramo <- ifelse(Total_Meta>=90, "1","2")
+```
+
+# Ley 18.834
+<p style = "font-size: 30px"> 
+<span style = "color: #19138D">  
+Cumplimiento total <b>`r round(Total_Meta, digits=1)`% </b>
+</span>
+</p>
+## Tramo: `r Tramo`
+
+
+```{r}
+porcentaje <-  c(sum(Total_Meta),sum(100-Total_Meta))
+categorias <- c("Cumple", "No Cumple")
+grafico_pie <- data.frame(porcentaje, categorias)
+
+ggplot(grafico_pie,aes(x="",y=porcentaje, fill=categorias))+
+  geom_bar(stat = "identity",
+           color="white")+
+  geom_text(aes(label=round(porcentaje,2)),
+            position=position_stack(vjust=0.5),color="black",size=4)+
+  coord_polar(theta = "y")+
+  theme_void()+
+  labs(title="% de Cumplimiento", size=40)
+```
+
+<p style = "font-size: 20px"> 
+<span style = "color: #0AABA5 ">  
+<b>Meta 1:</b> `r N1`
+</span>
+</p>
+
+
+#### Cumplimiento Meta1: `r round(Alc1,digits =1)`%
+#### Estado: `r CM1`
+```{r Meta 1}
+M11 <- c(sum(M1$`N° de Consultas de Profesionales no médicos realizadas en el año t`), sum(M1$`Total de Consultas de Profesionales no médicos Programadas y validadas en año t`))
+
+M1 <- rbind(M1, M11)
+rownames(M1)[13] <- "total"
+
+M1 %>%
+  kbl(caption = "Tabla 1") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+<span style = "color: #0AABA5 ">  
+<b>Meta 2:</b> `r N2`
+</span>
+</p>
+
+#### Cumplimiento Meta 2: `r round(Alc2,digits =1)`%
+#### Estado: `r CM2`
+```{r Meta 2}
+M21 <- c(sum(M2$`N° de pacientes categorizados según herramienta ESI en UEH.`), sum(M2$`Total de pacientes de Urgencias realizadas en UEH.`))
+
+M2 <- rbind(M2, M21)
+rownames(M2)[13] <- "total"
+
+M2 %>%
+  kbl(caption = "Tabla 2") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+
+<p style = "font-size: 20px"> 
+<span style = "color: #0AABA5 ">  
+<b>Meta 3:</b> `r N3`
+</span>
+</p>
+#### Cumplimiento Meta 3: `r round(Alc3,digits =1)`%
+#### Estado: `r CM3`
+```{r Meta 3}
+M31 <- c(sum(M3$`N° de días cama categorizados de Lunes a Domingo`), sum(M3$`N° de días cama ocupados que se categorizan de Lunes a Domingo`))
+
+M3 <- rbind(M3, M31)
+rownames(M3)[13] <- "total"
+
+M3 %>%
+  kbl(caption = "Tabla 3") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+<span style = "color: #0AABA5 ">  
+<b>Meta 4:</b> `r N4`
+</span>
+</p>
+#### Cumplimiento Meta 4: `r round(Alc4,digits =1)`%
+#### Estado: `r CM4`
+
+```{r Meta 4}
+M41 <- c(sum(M4$`Garantías cumplidas + Garantías exceptuadas + Garantías Inculplidas Atendidas`), sum(M4$`Garantías cumplidas + Garantías exceptuadas + Garantías Inculplidas Atendidas+ Garantías Incumplidas No atendidas + Garantías Retrasadas`))
+
+M4 <- rbind(M4, M41)
+rownames(M4)[13] <- "total"
+
+M4 %>%
+  kbl(caption = "Tabla 4") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+<span style = "color: #0AABA5 ">  
+<b>Meta 5:</b> `r N5`
+</span>
+</p>
+#### Cumplimiento Meta 5: `r round(Alc5,digits =1)`%
+#### Estado: `r CM5`
+```{r Meta 5}
+M51 <- c(sum(M5$`Número total de pacientes con indicación de hospitalización que espera en UEH t<12 horas para acceder a cama de dotación en t`), sum(M5$`Número total de pacientes con indicación de hospitalización  en el periodo t`))
+
+M5 <- rbind(M5, M51)
+rownames(M5)[13] <- "total"
+
+M5 %>%
+  kbl(caption = "Tabla 5") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+
+<p style = "font-size: 20px"> 
+<span style = "color: #0AABA5 ">  
+<b>Meta 6:</b> `r N6`
+</span>
+</p>
+#### Cumplimiento Meta 6: `r round(Alc6,digits =1)`%
+#### Estado: `r CM6`
+```{r Meta 6}
+M61 <- c(round(sum(M6$`N° de funcionarios capacitados año t`)), round(sum(M6$`N° total de funcionarios de la dotación`)))
+
+M6 <- rbind(M6, M61)
+rownames(M6)[13] <- "total"
+
+M6 %>%
+  kbl(caption = "Tabla 6") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+
+```{r Meta 19.664 datos Meta 1}
+Nn1 <- read_excel(L19,col_names = F,range = "Planilla HRR!C14:C14")
+
+Nn2 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!C25:C25")
+
+Nn3 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!C36:C36")
+
+Nn4 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!C48:C48")
+
+Nn5 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!C59:C59")
+
+Nn6 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!C70:C70")
+
+Nn7 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!C82:C82")
+
+Nn8 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!C94:C94")
+
+Nn9 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!C106:C106")
+
+
+M19664 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!B19:N20"
+)
+
+MetaMx1 <- 7
+Pondx1 <- 15
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+# Transpone todas las columnas menos la primer
+Mx1 <- data.frame(t(M19664[-1]))
+
+Mx1D <- sum(Mx1$X2)
+Mx1N <- sum(Mx1$X1)
+Alcx1 <- Mx1N / Mx1D * 100
+Cum_alcx1 <- ifelse(Alcx1 <= MetaMx1, 100, Alcx1)
+Cumplimx1 <- Cum_alcx1 * Pondx1 / 100
+
+# Añadimos los nombres de las columnas
+colnames(Mx1) <- c(M19664[1, 1], M19664[2, 1])
+```
+```{r Meta 19.664 datos Meta 2}
+M19664 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!B30:N31")
+M19664 <- mutate_all(M19664, ~ replace(., is.na(.), 0))
+
+MetaMx2 <- 65
+Pondx2 <- 10
+
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+Mx2 <- data.frame(t(M19664[-1]))
+
+Mx2D <- sum(Mx2$X2)
+Mx2N <- sum(Mx2$X1)
+Alcx2 <- Mx2N / Mx2D * 100
+Cum_alcx2 <- ifelse(Alcx2 >= MetaMx2, 100, Alcx2)
+Cumplimx2 <- Cum_alcx2 * Pondx2 / 100
+
+# Añadimos los nombres de las columnas
+colnames(Mx2) <- c(M19664[1, 1], M19664[2, 1])
+
+```
+```{r Meta 19.664 datos Meta 3}
+
+M19664 <- read_excel(L19,
+  col_names = F, range = "Planilla HRR!B41:N42", na = ""
+)
+M19664 <- mutate_all(M19664, ~ replace(., is.na(.), 0))
+
+MetaMx3 <- (-30)
+Pondx3 <- 7
+
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+Mx3 <- data.frame(t(M19664[-1]))
+Mx3D <- sum(Mx3$X2)
+Mx3N <- sum(Mx3$X1)
+Alcx3 <- (Mx3N - M3D)/M3D
+Cum_alcx3 <- ifelse(Alcx3 <= MetaMx3, 100, Alcx3)
+Cumplimx3 <- 0 # Revisar calculo Cum_alcx3 * Pondx3 / 100
+
+# Añadimos los nombres de las columnas
+colnames(Mx3) <- c(M19664[1, 1], M19664[2, 1])
+
+```
+```{r Meta 19.664 datos Meta 4}
+
+M19664 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!B53:N54", na = ""
+)
+M19664 <- mutate_all(M19664, ~ replace(., is.na(.), 0))
+
+MetaMx4 <- 84
+Pondx4 <- 5
+
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+Mx4 <- data.frame(t(M19664[-1]))
+
+Mx4D <- sum(Mx4$X2)
+Mx4N <- sum(Mx4$X1)
+Alcx4 <- Mx4N / Mx4D * 100
+Cum_alcx4 <- ifelse(Alcx4 >= MetaMx4, 100, Alcx4)
+Cumplimx4 <- 0 # Revisar calculo Cum_alcx4 * Pondx4 / 100
+
+# Añadimos los nombres de las columnas
+colnames(Mx4) <- c(M19664[1, 1], M19664[2, 1])
+
+```
+```{r Meta 19.664 datos Meta 5}
+
+
+M19664 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!B64:N65", na = "")
+M19664 <- mutate_all(M19664, ~ replace(., is.na(.), 0))
+
+MetaMx5 <- 95
+Pondx5 <- 15
+
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+Mx5 <- data.frame(t(M19664[-1]))
+
+Mx5D <- sum(Mx5$X2)
+Mx5N <- sum(Mx5$X1)
+Alcx5 <- Mx5N / Mx5D * 100
+Cum_alcx5 <- ifelse(Alcx5 >= MetaMx5, 100, Alcx5)
+Cumplimx5 <- Cum_alcx5 * Pondx5 / 100
+
+# Añadimos los nombres de las columnas
+colnames(Mx5) <- c(M19664[1, 1], M19664[2, 1])
+
+```
+```{r Meta 19.664 datos Meta 6}
+M19664 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!B75:N76", na = "")
+M19664 <- mutate_all(M19664, ~ replace(., is.na(.), 0))
+
+MetaMx6 <- 80
+Pondx6 <- 20
+
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+Mx6 <- data.frame(t(M19664[-1]))
+
+Mx6D <- sum(Mx6$X2)
+Mx6N <- sum(Mx6$X1)
+Alcx6 <- Mx6N / Mx6D * 100
+Cum_alcx6 <- ifelse(Alcx6 >= MetaMx6 * 0.6, ifelse(Alcx6 >= MetaMx6, 100, Alcx6), 0)
+Cumplimx6 <- Cum_alcx6 * Pondx6 / 100
+
+# Añadimos los nombres de las columnas
+colnames(Mx6) <- c(M19664[1, 1], M19664[2, 1])
+
+```
+```{r Meta 19.664 datos Meta 7}
+M19664 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!B87:N88", na = "")
+M19664 <- mutate_all(M19664, ~ replace(., is.na(.), 0))
+
+MetaMx7 <- 95
+Pondx7 <- 15
+
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+# Transpone todas las columnas menos la primer
+Mx7 <- data.frame(t(M19664[-1]))
+
+Mx7D <- sum(Mx7$X2)
+Mx7N <- sum(Mx7$X1)
+Alcx7 <- Mx7N / Mx7D * 100
+Cum_alcx7 <- ifelse(Alcx7 >= MetaMx7 * 0.6, ifelse(Alcx7 >= MetaMx7, 100, Alcx7), 0)
+Cumplimx7 <- Cum_alcx7 * Pondx7 / 100
+
+# Añadimos los nombres de las columnas
+colnames(Mx7) <- c(M19664[1, 1], M19664[2, 1])
+
+```
+```{r Meta 19.664 datos Meta 8}
+M19664 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!B99:N100", na = "")
+M19664 <- mutate_all(M19664, ~ replace(., is.na(.), 0))
+
+MetaMx8 <- 5
+Pondx8 <- 6
+
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+Mx8 <- data.frame(t(M19664[-1]))
+
+Mx8D <- sum(Mx8$X2)
+Mx8N <- sum(Mx8$X1)
+Alcx8 <- ifelse(Mx8N == 0 & Mx8D == 0,100,Mx8N / Mx8D * 100)
+Cum_alcx8 <- ifelse(Alcx8 >= MetaMx8 * 0.6, ifelse(Alcx8 >= MetaMx8, 100, Alcx8), 0)
+Cumplimx8 <- Cum_alcx8 * Pondx8 / 100
+
+# Añadimos los nombres de las columnas
+colnames(Mx8) <- c(M19664[1, 1], M19664[2, 1])
+
+```
+```{r Meta 19.664 datos Meta 9}
+M19664 <- read_excel(L19,
+  col_names = F,
+  range = "Planilla HRR!B111:N112", na = "")
+M19664 <- mutate_all(M19664, ~ replace(., is.na(.), 0))
+
+MetaMx9 <- 99.5
+Pondx9 <- 7
+
+
+colnames(M19664)[2] <- "enero"
+colnames(M19664)[3] <- "febrero"
+colnames(M19664)[4] <- "marzo"
+colnames(M19664)[5] <- "abril"
+colnames(M19664)[6] <- "mayo"
+colnames(M19664)[7] <- "junio"
+colnames(M19664)[8] <- "julio"
+colnames(M19664)[9] <- "agosto"
+colnames(M19664)[10] <- "septiembre"
+colnames(M19664)[11] <- "octubre"
+colnames(M19664)[12] <- "noviembre"
+colnames(M19664)[13] <- "diciembre"
+
+
+# Transpone todas las columnas menos la primer
+Mx9 <- data.frame(t(M19664[-1]))
+
+Mx9D <- sum(Mx9$X2)
+Mx9N <- sum(Mx9$X1)
+Alcx9 <- Mx9N / Mx9D * 100
+Cum_alcx9 <- ifelse(Alcx9 >= MetaMx9 * 0.6, ifelse(Alcx9 >= MetaMx9, 100, Alcx9), 0)
+Cumplimx9 <- ifelse(Cum_alcx9 * Pondx9 / 100 >= 99.5, Cum_alcx9 * Pondx9 / 100, 0) #Revisar esta escala provisoria
+
+# Añadimos los nombres de las columnas
+colnames(Mx9) <- c(M19664[1, 1], M19664[2, 1])
+
+Total_Metax <- Cumplimx1 + Cumplimx2 + Cumplimx3 + Cumplimx4 + Cumplimx5 + Cumplimx6+Cumplimx7+Cumplimx8+Cumplimx9
+
+CMx1 <- ifelse(Cum_alcx1 == 100, "Cumple", "No Cumple")
+CMx2 <- ifelse(Cum_alcx2 == 100, "Cumple", "No Cumple")
+CMx3 <- ifelse(Cum_alcx3 == 100, "Cumple", "No Cumple")
+CMx4 <- ifelse(Cum_alcx4 == 100, "Cumple", "No Cumple")
+CMx5 <- ifelse(Cum_alcx5 == 100, "Cumple", "No Cumple")
+CMx6 <- ifelse(Cum_alcx6 == 100, "Cumple", "No Cumple")
+CMx7 <- ifelse(Cum_alcx7 == 100, "Cumple", "No Cumple")
+CMx8 <- ifelse(Cum_alcx8 == 100, "Cumple", "No Cumple")
+CMx9 <- ifelse(Cum_alcx9 == 100, "Cumple", "No Cumple")
+
+Tramox <- ifelse(Total_Meta>=90, "1","2")
+```
+
+# Ley 19.664
+<p style = "font-size: 30px"> 
+<span style = "color: #19138D">  
+Cumplimiento total <b>`r round(Total_Metax, digits=1)`% </b>
+</span>
+</p>
+## Tramo: `r Tramox`
+```{r}
+porcentaje <-  c(sum(Total_Metax),sum(100-Total_Metax))
+categorias <- c("Cumple", "No Cumple")
+grafico_pie <- data.frame(porcentaje, categorias)
+
+ggplot(grafico_pie,aes(x="",y=porcentaje, fill=categorias))+
+  geom_bar(stat = "identity",
+           color="white")+
+  geom_text(aes(label=round(porcentaje,2)),
+            position=position_stack(vjust=0.5),color="black",size=4)+
+  coord_polar(theta = "y")+
+  theme_void()+
+  labs(title="% de Cumplimiento", size=40)
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 1:</b> `r Nn1`
+</span>
+  </p>
+
+#### Cumplimiento Meta1: `r round(Alcx1,digits =1)`%
+#### Estado: `r CMx1`
+
+```{r 19664 Meta 1}
+a1 <- colSums (Mx1)
+a1 <- as.data.frame(a1)
+
+M11 <- c(round(a1[1,1]), round(a1[2,1]))
+
+Mx1 <- rbind(Mx1, M11)
+rownames(Mx1)[13] <- "total"
+
+Mx1 %>%
+  kbl(caption = "Tabla 1") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 2:</b> `r Nn2`
+</span>
+  </p>
+  
+#### Cumplimiento Meta 2: `r round(Alcx2,digits =1)`%
+#### Estado: `r CMx2`
+```{r 19664 Meta 2}
+a2 <- colSums (Mx2)
+a2 <- as.data.frame(a2)
+
+M21 <- c(round(a2[1,1]), round(a2[2,1]))
+
+Mx2 <- rbind(Mx2, M21)
+rownames(Mx2)[13] <- "total"
+
+Mx2 %>%
+  kbl(caption = "Tabla 2") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 3:</b> `r Nn3`
+</span>
+  </p>
+#### Cumplimiento Meta 3: `r round(Alcx3,digits =1)`%
+#### Estado: `r CMx3`
+
+```{r 19664 Meta 3}
+a3 <- colSums (Mx3)
+a3<- as.data.frame(a3)
+
+M31 <- c(round(a3[1,1]), round(a3[2,1]))
+Mx3 <- rbind(Mx3, M31)
+rownames(Mx3)[13] <- "total"
+
+Mx3 %>%
+  kbl(caption = "Tabla 3") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 4:</b> `r Nn4`
+</span>
+  </p>
+#### Cumplimiento Meta 4: `r round(Alcx4,digits =1)`%
+#### Estado: `r CMx4`
+  
+```{r 19664 Meta 4}
+a4 <- colSums (Mx4)
+a4 <- as.data.frame(a4)
+
+M41 <- c(round(a4[1,1]), round(a4[2,1]))
+
+Mx4 <- rbind(Mx4, M41)
+rownames(Mx4)[13] <- "total"
+
+Mx4 %>%
+  kbl(caption = "Tabla 4") %>%
+  kable_classic(lightable_options = "hover")
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 5:</b> `r Nn5`
+</span>
+  </p>
+#### Cumplimiento Meta 5: `r round(Alcx5,digits =1)`%
+#### Estado: `r CMx5`
+```{r 19664 Meta 5}
+a5 <- colSums (Mx5)
+a5 <- as.data.frame(a5)
+
+M51 <- c(round(a5[1,1]), round(a5[2,1]))
+
+Mx5 <- rbind(Mx5, M51)
+rownames(Mx5)[13] <- "total"
+
+Mx5 %>%
+  kbl(caption = "Tabla 5") %>%
+  kable_classic(lightable_options = "hover")
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 6:</b> `r Nn6`
+</span>
+  </p>
+#### Cumplimiento Meta 6: `r round(Alcx6,digits =1)`%
+#### Estado: `r CMx6`
+```{r 19664 Meta 6}
+a6 <- colSums (Mx6)
+a6 <- as.data.frame(a6)
+
+M61 <- c(round(a6[1,1]), round(a6[2,1]))
+
+Mx6 <- rbind(Mx6, M61)
+rownames(Mx6)[13] <- "total"
+
+Mx6 %>%
+  kbl(caption = "Tabla 6") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 7:</b> `r Nn7`
+</span>
+  </p>
+#### Cumplimiento Meta 7: `r round(Alcx7,digits =1)`%
+#### Estado: `r CMx7`
+```{r 19664 Meta 7}
+a7 <- colSums (Mx7)
+a7 <- as.data.frame(a7)
+
+M71 <- c(round(a7[1,1]), round(a7[2,1]))
+
+Mx7 <- rbind(Mx7, M71)
+rownames(Mx7)[13] <- "total"
+
+Mx7 %>%
+  kbl(caption = "Tabla 7") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 8:</b> `r Nn8`
+</span>
+  </p>
+#### Cumplimiento Meta 8: `r round(Alcx8,digits =1)`%
+#### Estado: `r CMx8`
+```{r 19664 Meta 8}
+a8 <- colSums (Mx8)
+a8 <- as.data.frame(a8)
+
+M81 <- c(round(a8[1,1]), round(a8[2,1]))
+
+Mx8 <- rbind(Mx8, M81)
+rownames(Mx8)[13] <- "total"
+
+Mx8 %>%
+  kbl(caption = "Tabla 8") %>%
+  kable_classic(lightable_options = "hover")
+
+```
+
+<p style = "font-size: 20px"> 
+  <span style = "color: #0AABA5 ">  
+  <b>Meta 9:</b> `r Nn6`
+</span>
+  </p>
+#### Cumplimiento Meta 9: `r round(Alcx9,digits =1)`%
+#### Estado: `r CMx9`
+```{r 19664 Meta 9}
+a9 <- colSums (Mx9)
+a9 <- as.data.frame(a9)
+
+M91 <- c(round(a9[1,1]), round(a9[2,1]))
+
+Mx9 <- rbind(Mx9, M91)
+rownames(Mx9)[13] <- "total"
+
+Mx9 %>%
+  kbl(caption = "Tabla 9") %>%
+  kable_classic(lightable_options = "hover")
+
+```
