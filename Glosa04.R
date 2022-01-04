@@ -18,7 +18,7 @@ F3 <- "2021-09-01"
 
 # Cirugias Mayores --------------------------------------------------------
 
-Qx_tipo_cirugias <- read_excel("BBDD Produccion/Quirurgico/B172_Qf BBDD.xlsx")
+Qx_tipo_cirugias <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Quirurgico/B172_Qf BBDD.xlsx")
 Qx_tipo_cirugias$Fecha=as.character(Qx_tipo_cirugias$Fecha)
 
 Qx_tipo_cirugias <- Qx_tipo_cirugias %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
@@ -33,7 +33,7 @@ Qx_tipo_cirugias <- Qx_tipo_cirugias %>% filter(Fecha == F1 | Fecha == F2 | Fech
   
 
 # Cirugias Menores --------------------------------------------------------
-Qx_cirugias_menores <- read_excel("BBDD Produccion/Quirurgico/B171_Qf BBDD.xlsx")
+Qx_cirugias_menores <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Quirurgico/B171_Qf BBDD.xlsx")
 Qx_cirugias_menores$Fecha=as.character(Qx_cirugias_menores$Fecha)
 
 Qx_cirugias_menores <- Qx_cirugias_menores %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
@@ -44,7 +44,7 @@ Qx_cirugias_menores <- Qx_cirugias_menores %>% filter(Fecha == F1 | Fecha == F2 
 
 
 # Ocupación Quirofanos Cirugias Mayores ----------------------------------------------------
-Qx_ocupacion <- read_excel("BBDD Produccion/Quirurgico/A21_1 BBDD.xlsx")
+Qx_ocupacion <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Quirurgico/A21_1 BBDD.xlsx")
 Qx_ocupacion$Fecha=as.character(Qx_ocupacion$Fecha)
 
 Qx_ocupacion1 <- Qx_ocupacion %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
@@ -93,7 +93,7 @@ Qx_ocupacion4$Tipo <- ifelse(Qx_ocupacion4$Tipo == "DE CIRUGÍA ELECTIVA", "Hora
 
 
 # Suspensiones ------------------------------------------------------------
-suspensiones <- read_excel("BBDD Produccion/Quirurgico/A21_3 BBDD.xlsx")
+suspensiones <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Quirurgico/A21_3 BBDD.xlsx")
 suspensiones$Fecha=as.character(suspensiones$Fecha)
 
 suspensiones <- suspensiones %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
@@ -107,7 +107,7 @@ suspensiones <- suspensiones %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3)
 
 # Censo -------------------------------------------------------------------
 
-censo <- read_excel("BBDD Produccion/REM/CENSO/Censo-FUNCIONAL_BBDD.xlsx")
+censo <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/Censo-FUNCIONAL_BBDD.xlsx")
 censo$Fecha=as.character(censo$Fecha)
 censo1 <- censo %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
   filter(`Información estadistica` == "N° de Camas Ocupadas" | `Información estadistica` == "N° de Camas Disponibles"
@@ -144,7 +144,7 @@ colnames(censo2)[2] <- "Tipo"
 
 # Consultas Ambulatorias --------------------------------------------------
 
-cons_amb <- read_excel("BBDD Produccion/Ambulatorio/A07 BBDD.xlsx")
+cons_amb <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A07 BBDD.xlsx")
 cons_amb$Fecha=as.character(cons_amb$Fecha)
 
 cons_amb <- cons_amb %>% 
@@ -158,7 +158,7 @@ cons_amb <- cons_amb %>%
 
 # Telemedicina ------------------------------------------------------------
 
-telemedicina <- read_excel("BBDD Produccion/Ambulatorio/A30 BBDD.xlsx")
+telemedicina <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A30 BBDD.xlsx")
 telemedicina$Fecha=as.character(telemedicina$Fecha)
 telemedicina <- telemedicina %>% 
   filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
@@ -169,7 +169,7 @@ telemedicina <- telemedicina %>%
   select(Tag, Tipo, Total)
 
 # Urgencia ----------------------------------------------------------------
-urgencia <- read_excel("BBDD Produccion/Urgencia/A08 BBDD_04.xlsx")
+urgencia <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Urgencia/A08 BBDD_04.xlsx")
 urgencia$Fecha=as.character(urgencia$Fecha)
 urgencia1 <- urgencia %>% 
   filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
@@ -229,7 +229,7 @@ Glosa04 <- Glosa04 %>% mutate(Cod = case_when(
     Tipo == "Número total de pacientes con Indicación de Hospitalización en UEH en t" ~ "17",
     TRUE ~ "XD")) %>% select(Cod, Tipo, Total)
 
-openxlsx::write.xlsx(Glosa04, "BBDD Produccion/Indicadores/Glosa 04/Glosa 04 T3.xlsx", colNames = TRUE, sheetName = "Glosa04", overwrite = TRUE)
+openxlsx::write.xlsx(Glosa04, "C:/Users/control.gestion3/OneDrive/BBDD Produccion/Indicadores/Glosa 04/Glosa 04 T4.xlsx", colNames = TRUE, sheetName = "Glosa04", overwrite = TRUE)
 
 rm(F1, F2, F3,Qx_tipo_cirugias,Qx_cirugias_menores, Qx_ocupacion, Qx_ocupacion1, 
    Qx_ocupacion2, Qx_ocupacion3, Qx_ocupacion4, suspensiones, censo, censo1, censo2, 

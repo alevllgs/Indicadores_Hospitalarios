@@ -1,0 +1,236 @@
+# Librerias ---------------------------------------------------------------
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(janitor)
+library(dplyr)
+library(openxlsx)
+library(xlsx)
+
+#debo agregar a consultas nuevas lo de telemedicina y A32, tambien a las consultas totales
+#revisar el correo q le envie a Francia, ya que ahi detallo lo que no capturo
+
+
+#Fechas para filtrar las BBDD
+F1 <- "2021-07-01"
+F2 <- "2021-08-01"
+F3 <- "2021-09-01"
+
+# Cirugias Mayores --------------------------------------------------------
+
+Qx_tipo_cirugias <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Quirurgico/B172_Qf BBDD.xlsx")
+Qx_tipo_cirugias$Fecha=as.character(Qx_tipo_cirugias$Fecha)
+
+Qx_tipo_cirugias <- Qx_tipo_cirugias %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  group_by(Tipo) %>% 
+  summarise(Total=sum(Total)) %>% mutate(Tipo = case_when(
+    Tipo == "ELECTIVAS MAYORES AMBULATORIAS" ~ "Intervenciones Quirúrgicas Electivas Ambulatorias",
+    Tipo == "ELECTIVAS MAYORES NO AMBULATORIAS" ~ "Intervenciones Quirúrgicas Electivas No ambulatorias",
+    Tipo == "URGENCIA, MAYOR AMBULATORIA" ~ "Intervenciones Quirúrgicas Urgencias Ambulatoria",
+    Tipo == "URGENCIA, MAYOR NO AMBULATORIA" ~ "Intervenciones Quirúrgicas Urgencias No Ambulatoria",
+    TRUE ~ "XD")) %>% 
+  mutate(Tag = "Total IQ") %>% select(Tag, Tipo, Total)
+  
+
+# Cirugias Menores --------------------------------------------------------
+Qx_cirugias_menores <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Quirurgico/B171_Qf BBDD.xlsx")
+Qx_cirugias_menores$Fecha=as.character(Qx_cirugias_menores$Fecha)
+
+Qx_cirugias_menores <- Qx_cirugias_menores %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  mutate(Tipo = "Intervenciones Quirúrgicas Menores") %>% 
+  group_by(Tipo) %>% 
+  summarise(Total=sum(`Cirugias menores`)) %>% 
+  mutate(Tag = "Total IQ") %>% select(Tag, Tipo, Total)
+
+
+# Ocupación Quirofanos Cirugias Mayores ----------------------------------------------------
+Qx_ocupacion <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Quirurgico/A21_1 BBDD.xlsx")
+Qx_ocupacion$Fecha=as.character(Qx_ocupacion$Fecha)
+
+Qx_ocupacion1 <- Qx_ocupacion %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  select(Fecha, `TIPO DE QUIRÓFANOS`, `HORAS MENSUALES OCUPADAS DE QUIRÓFANOS EN TRABAJO HORARIO HÁBIL`) %>% 
+  filter(`TIPO DE QUIRÓFANOS` == "DE CIRUGÍA ELECTIVA" | `TIPO DE QUIRÓFANOS` == "DE URGENCIA") %>% 
+  group_by(`TIPO DE QUIRÓFANOS`) %>% 
+  summarise(Total=sum(`HORAS MENSUALES OCUPADAS DE QUIRÓFANOS EN TRABAJO HORARIO HÁBIL`)) %>% 
+  mutate(Tag = "Ocupación") %>% select(Tag, `TIPO DE QUIRÓFANOS`, Total)
+colnames(Qx_ocupacion1)[2] <- "Tipo" 
+Qx_ocupacion1$Tipo <- ifelse(Qx_ocupacion1$Tipo == "DE CIRUGÍA ELECTIVA", "Horas mensuales de Cirugía Electiva", "Horas mensuales de Urgencias")
+
+
+# Ocupación Quirofanos Cirugias Menores -----------------------------------
+Qx_ocupacion2 <- Qx_ocupacion %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  select(Fecha, `TIPO DE QUIRÓFANOS`, `TOTAL HORAS MENSUALES OCUPADAS DE QUIRÓFANOS EN TRABAJO (Cirugia Menor)`) %>% 
+  filter(`TIPO DE QUIRÓFANOS` == "DE CIRUGÍA ELECTIVA" | `TIPO DE QUIRÓFANOS` == "DE URGENCIA") %>% 
+  group_by(`TIPO DE QUIRÓFANOS`) %>% 
+  summarise(Total=sum(`TOTAL HORAS MENSUALES OCUPADAS DE QUIRÓFANOS EN TRABAJO (Cirugia Menor)`)) %>% 
+  mutate(Tag = "Ocupación") %>% select(Tag, `TIPO DE QUIRÓFANOS`, Total)
+colnames(Qx_ocupacion2)[2] <- "Tipo" 
+Qx_ocupacion2$Tipo <- ifelse(Qx_ocupacion2$Tipo == "DE CIRUGÍA ELECTIVA", "Cirugía Menor (de Cirugía Electiva)", "Cirugía Menor (de Urgencia)")
+
+
+# Ocupación Quirofanos Otros Procedimientos -------------------------------
+
+Qx_ocupacion3 <- Qx_ocupacion %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  select(Fecha, `TIPO DE QUIRÓFANOS`, `TOTAL HORAS MENSUALES OCUPADAS DE QUIRÓFANOS EN TRABAJO (Procedimientos)`) %>% 
+  filter(`TIPO DE QUIRÓFANOS` == "DE CIRUGÍA ELECTIVA" | `TIPO DE QUIRÓFANOS` == "DE URGENCIA") %>% 
+  group_by(`TIPO DE QUIRÓFANOS`) %>% 
+  summarise(Total=sum(`TOTAL HORAS MENSUALES OCUPADAS DE QUIRÓFANOS EN TRABAJO (Procedimientos)`)) %>% 
+  mutate(Tag = "Ocupación") %>% select(Tag, `TIPO DE QUIRÓFANOS`, Total)
+colnames(Qx_ocupacion3)[2] <- "Tipo" 
+Qx_ocupacion3$Tipo <- ifelse(Qx_ocupacion3$Tipo == "DE CIRUGÍA ELECTIVA", "Otros Procedimiento (de Cirugía Electiva)", "Otros Procedimiento (de Urgencia)")
+
+
+# Quirofanos Habilitados --------------------------------------------------
+Qx_ocupacion4 <- Qx_ocupacion %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  select(Fecha, `TIPO DE QUIRÓFANOS`, `TOTAL  DE HORAS MENSUALES DE QUIRÓFANOS HABILITADOS (HORARIO HÁBIL)`) %>% 
+  filter(`TIPO DE QUIRÓFANOS` == "DE CIRUGÍA ELECTIVA" | `TIPO DE QUIRÓFANOS` == "DE URGENCIA") %>% 
+  group_by(`TIPO DE QUIRÓFANOS`) %>% 
+  summarise(Total=sum(`TOTAL  DE HORAS MENSUALES DE QUIRÓFANOS HABILITADOS (HORARIO HÁBIL)`)) %>% 
+  mutate(Tag = "Habilitados") %>% select(Tag, `TIPO DE QUIRÓFANOS`, Total)
+colnames(Qx_ocupacion4)[2] <- "Tipo" 
+Qx_ocupacion4$Tipo <- ifelse(Qx_ocupacion4$Tipo == "DE CIRUGÍA ELECTIVA", "Horas mensuales de Cirugía Electiva hab", "Horas mensuales de Urgencias hab")
+
+
+
+# Suspensiones ------------------------------------------------------------
+suspensiones <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Quirurgico/A21_3 BBDD.xlsx")
+suspensiones$Fecha=as.character(suspensiones$Fecha)
+
+suspensiones <- suspensiones %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  select(Fecha, Especialidad, `Pacientes Suspendidos`, `Pacientes Programados`) %>% 
+  mutate(Tag = "Suspensiones") %>% 
+  group_by(Tag) %>% 
+  summarise("Numero total de pacientes programados en tabla Quirurgicas para IQ Mayores Suspendidos" = sum(`Pacientes Suspendidos`), 
+            "Numero total de pacientes programados en tabla Quirurgicas para IQ Mayores" = sum(`Pacientes Programados`)) %>% 
+  pivot_longer(-Tag, names_to = "Tipo", values_to = "Total")
+
+
+# Censo -------------------------------------------------------------------
+
+censo <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/Censo-FUNCIONAL_BBDD.xlsx")
+censo$Fecha=as.character(censo$Fecha)
+censo1 <- censo %>% filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  filter(`Información estadistica` == "N° de Camas Ocupadas" | `Información estadistica` == "N° de Camas Disponibles"
+         |`Información estadistica` == "Egresos- Alta" | `Información estadistica` == "Egresos-Fallecidos") %>% 
+  mutate(`Información estadistica` = case_when(
+    `Información estadistica` == "N° de Camas Ocupadas" ~ "Número total de Días Camas Ocupado",
+    `Información estadistica` == "N° de Camas Disponibles" ~ "Número total de Días Camas Disponibles",
+    `Información estadistica` == "Egresos- Alta" ~ "Número total de Egresos Hospitalarios",
+    `Información estadistica` == "Egresos-Fallecidos" ~ "Número total de Egresos Hospitalarios",
+    TRUE ~ "XD")) %>% 
+  group_by(`Información estadistica`) %>% 
+  summarise(Total = sum(Total))  %>%  
+  mutate(Tag = "Censo") %>% 
+  select(Tag, `Información estadistica`, Total)
+colnames(censo1)[2] <- "Tipo" 
+
+censo2 <- censo %>% 
+  filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  filter(`Información estadistica` == "Días de estada totales" 
+         |`Información estadistica` == "Egresos- Alta" | `Información estadistica` == "Egresos-Fallecidos" ) %>% 
+  filter(`UNIDAD FUNCIONAL` != "AREA PSIQUIATRIA INFANTO ADOLESCENTE CORTA ESTADIA" 
+         & `UNIDAD FUNCIONAL` != "AREA PSIQUIATRIA INFANTO ADOLESCENTE MEDIANA ESTADIA") %>% 
+  mutate(`Información estadistica` = case_when(
+    `Información estadistica` == "Días de estada totales" ~ "Número total de Días de Estada (*)",
+    `Información estadistica` == "Egresos- Alta" ~ "Número de Egresos Hospitalarios (*)",
+    `Información estadistica` == "Egresos-Fallecidos" ~ "Número de Egresos Hospitalarios (*)",
+    TRUE ~ "XD")) %>% 
+  group_by(`Información estadistica`) %>% 
+  summarise(Total = sum(Total))  %>%  
+  mutate(Tag = "Censo") %>% 
+  select(Tag, `Información estadistica`, Total)
+colnames(censo2)[2] <- "Tipo" 
+
+
+# Consultas Ambulatorias --------------------------------------------------
+
+cons_amb <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A07 BBDD.xlsx")
+cons_amb$Fecha=as.character(cons_amb$Fecha)
+
+cons_amb <- cons_amb %>% 
+  filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  mutate(Tag = "Consultas") %>% 
+  group_by(Tag) %>% 
+  summarise("Total Consultas Medicas Especialidades" = sum(Total), 
+            "Total Consultas Nuevas Especialidades" = sum(Consulta_Nueva)) %>% 
+  pivot_longer(-Tag, names_to = "Tipo", values_to = "Total")
+  
+
+# Telemedicina ------------------------------------------------------------
+
+telemedicina <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A30 BBDD.xlsx")
+telemedicina$Fecha=as.character(telemedicina$Fecha)
+telemedicina <- telemedicina %>% 
+  filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  mutate(Tag = "Telemedicina") %>% 
+  group_by(Tag) %>% 
+  summarise("Total" = sum(Telemedicina_Nueva)+ sum(Telemedicina_Control)) %>% 
+  mutate(Tipo = "Total Teleconsultas (nuevas y controles)") %>% 
+  select(Tag, Tipo, Total)
+
+# Urgencia ----------------------------------------------------------------
+urgencia <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Urgencia/A08 BBDD_04.xlsx")
+urgencia$Fecha=as.character(urgencia$Fecha)
+urgencia1 <- urgencia %>% 
+  filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  filter(`Categoria pacientes` == "MENOS DE 12 HORAS") %>%
+  mutate(Tag = "Urgencia") %>% 
+  group_by(Tag) %>% 
+  summarise("Total" = sum(Total)) %>% 
+  mutate(Tipo = "Número Total de pacientes con Indicación de Hospitalización que espera en UEH T´< a 12 horas para acceder a una cama de dotación en t.") %>% 
+  select(Tag, Tipo, Total)
+
+urgencia2 <- urgencia %>% 
+  filter(Fecha == F1 | Fecha == F2 | Fecha == F3) %>% 
+  filter(`Categoria pacientes` == "MENOS DE 12 HORAS" |`Categoria pacientes` == "12-24 HORAS"
+         |`Categoria pacientes` == "MAYOR A 24 HORAS" | `Categoria pacientes` == "PACIENTES QUE PERMANECEN EN UEH") %>%
+  mutate(Tag = "Urgencia") %>% 
+  group_by(Tag) %>% 
+  summarise("Total" = sum(Total)) %>% 
+  mutate(Tipo = "Número total de pacientes con Indicación de Hospitalización en UEH en t") %>% 
+  select(Tag, Tipo, Total)
+
+
+
+# GLOSA 04 ----------------------------------------------------------------
+
+
+Glosa04 <- rbind(Qx_tipo_cirugias,Qx_cirugias_menores, Qx_ocupacion1, 
+                 Qx_ocupacion2, Qx_ocupacion3, Qx_ocupacion4, suspensiones,
+                 censo1, censo2, cons_amb, telemedicina, urgencia1, urgencia2)
+
+
+
+Glosa04 <- Glosa04 %>% mutate(Cod = case_when(
+    Tipo == "Intervenciones Quirúrgicas Electivas Ambulatorias" ~ "1.1",
+    Tipo == "Intervenciones Quirúrgicas Electivas No ambulatorias" ~ "1.2",
+    Tipo == "Intervenciones Quirúrgicas Urgencias Ambulatoria" ~ "1.3",
+    Tipo == "Intervenciones Quirúrgicas Urgencias No Ambulatoria" ~ "1.4",
+    Tipo == "Intervenciones Quirúrgicas Menores" ~ "1.5",
+    Tipo == "Horas mensuales de Cirugía Electiva" ~ "2.11",
+    Tipo == "Horas mensuales de Urgencias" ~ "2.12",
+    Tipo == "Cirugía Menor (de Cirugía Electiva)" ~ "2.21",
+    Tipo == "Cirugía Menor (de Urgencia)" ~ "2.22",
+    Tipo == "Otros Procedimiento (de Cirugía Electiva)" ~ "2.23",
+    Tipo == "Otros Procedimiento (de Urgencia)" ~ "2.24",
+    Tipo == "Horas mensuales de Cirugía Electiva hab" ~ "3.1",
+    Tipo == "Horas mensuales de Urgencias hab" ~ "3.2",
+    Tipo == "Numero total de pacientes programados en tabla Quirurgicas para IQ Mayores Suspendidos" ~ "4",
+    Tipo == "Numero total de pacientes programados en tabla Quirurgicas para IQ Mayores" ~ "5",
+    Tipo == "Número total de Días Camas Ocupado" ~ "8",
+    Tipo == "Número total de Días Camas Disponibles" ~ "9",
+    Tipo == "Número total de Egresos Hospitalarios" ~ "10",
+    Tipo == "Número total de Días de Estada (*)" ~ "11",
+    Tipo == "Número de Egresos Hospitalarios (*)" ~ "12",
+    Tipo == "Total Consultas Medicas Especialidades" ~ "13",
+    Tipo == "Total Consultas Nuevas Especialidades" ~ "14",
+    Tipo == "Total Teleconsultas (nuevas y controles)" ~ "15",
+    Tipo == "Número Total de pacientes con Indicación de Hospitalización que espera en UEH T´< a 12 horas para acceder a una cama de dotación en t." ~ "16",
+    Tipo == "Número total de pacientes con Indicación de Hospitalización en UEH en t" ~ "17",
+    TRUE ~ "XD")) %>% select(Cod, Tipo, Total)
+
+openxlsx::write.xlsx(Glosa04, "C:/Users/control.gestion3/OneDrive/BBDD Produccion/Indicadores/Glosa 04/Glosa 04 T4.xlsx", colNames = TRUE, sheetName = "Glosa04", overwrite = TRUE)
+
+rm(F1, F2, F3,Qx_tipo_cirugias,Qx_cirugias_menores, Qx_ocupacion, Qx_ocupacion1, 
+   Qx_ocupacion2, Qx_ocupacion3, Qx_ocupacion4, suspensiones, censo, censo1, censo2, 
+   cons_amb, telemedicina, urgencia, urgencia1, urgencia2, Glosa04)
