@@ -231,6 +231,7 @@ Glosa04 <- Glosa04 %>% mutate(Cod = case_when(
 
 openxlsx::write.xlsx(Glosa04, "C:/Users/control.gestion3/OneDrive/BBDD Produccion/Indicadores/Glosa 04/Glosa 04 T4.xlsx", colNames = TRUE, sheetName = "Glosa04", overwrite = TRUE)
 
+
 rm(F1, F2, F3,Qx_tipo_cirugias,Qx_cirugias_menores, Qx_ocupacion, Qx_ocupacion1, 
    Qx_ocupacion2, Qx_ocupacion3, Qx_ocupacion4, suspensiones, censo, censo1, censo2, 
    cons_amb, telemedicina, urgencia, urgencia1, urgencia2, Glosa04)
